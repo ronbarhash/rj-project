@@ -62,11 +62,11 @@ func deleteHandler(c *gin.Context) {
 
 	for i, item := range users {
 		if item.Id == id {
-			users = append(users[:i], users[i+1]...)
+			users = append(users[:i], users[i+1:]...)
 			return
 		}
 	}
-	c.JSON(200, item)
+	c.JSON(200, id)
 }
 
 func putHandler(c *gin.Context) {
