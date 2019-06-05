@@ -37,6 +37,7 @@ func main() {
 func rootHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
+
 func postHandler(c *gin.Context) {
 	var user Person
 
@@ -48,7 +49,6 @@ func postHandler(c *gin.Context) {
 		is_admin = "false"
 	}
 
-	// log.Print(is_admin)
 	user.Id = len(users) + 1
 	user.Name = name
 
@@ -56,8 +56,25 @@ func postHandler(c *gin.Context) {
 
 	c.JSON(200, user)
 }
-func deleteHandler(c *gin.Context) {}
-func putHandler(c *gin.Context)    {}
+
+func deleteHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	for i, item := range users {
+		if item.Id == id {
+			users = append(users[:i], users[i+1]...)
+			return
+		}
+	}
+	c.JSON(200, item)
+}
+
+func putHandler(c *gin.Context) {
+	var user Person
+
+	c.JSON(200, user)
+}
+
 func getHandler(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
