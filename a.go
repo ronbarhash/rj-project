@@ -38,7 +38,23 @@ func rootHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 func postHandler(c *gin.Context) {
-	//
+	var user Person
+
+	name := c.Query("name")
+	is_admin := c.Query("isAdmin")
+	if is_admin != "" {
+		is_admin = "true" //strconv.ParseBool(is_admin)
+	} else {
+		is_admin = "false"
+	}
+
+	// log.Print(is_admin)
+	user.Id = len(users) + 1
+	user.Name = name
+
+	users = append(users, user)
+
+	c.JSON(200, user)
 }
 func deleteHandler(c *gin.Context) {}
 func putHandler(c *gin.Context)    {}
