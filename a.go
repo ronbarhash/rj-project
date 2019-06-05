@@ -71,6 +71,29 @@ func deleteHandler(c *gin.Context) {
 
 func putHandler(c *gin.Context) {
 	var user Person
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	for _, item := range users {
+		if id == item.Id {
+
+			user.Id = id
+			name := c.Query("name")
+			is_admin := c.Query("is_admin")
+
+			if name != "" {
+				user.Name = name
+			} else {
+				user.Name = item.Name
+			}
+
+			if is_admin != "" {
+				user.isAdmin, _ = strconv.ParseBool(is_admin)
+			} else {
+				user.isAdmin = item.isAdmin
+			}
+
+		}
+	}
 
 	c.JSON(200, user)
 }
@@ -78,9 +101,11 @@ func putHandler(c *gin.Context) {
 func getHandler(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
+
 	if err != nil {
 		c.JSON(500, gin.H{"ststus": "Server critical error"})
 	}
+
 	for _, item := range users {
 		if id == item.Id {
 			c.JSON(200, item)
