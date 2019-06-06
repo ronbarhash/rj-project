@@ -8,10 +8,10 @@ import (
 	"github.com/rj-project/models"
 )
 
-var users = []models.Person{}
+var Users = []models.Person{}
 
 func RootHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, Users)
 }
 
 func PostHandler(c *gin.Context) {
@@ -25,10 +25,10 @@ func PostHandler(c *gin.Context) {
 		is_admin = "false"
 	}
 
-	user.Id = len(users) + 1
+	user.Id = len(Users) + 1
 	user.Name = name
 
-	users = append(users, user)
+	Users = append(Users, user)
 
 	c.JSON(200, user)
 }
@@ -36,9 +36,9 @@ func PostHandler(c *gin.Context) {
 func DeleteHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	for i, item := range users {
+	for i, item := range Users {
 		if item.Id == id {
-			users = append(users[:i], users[i+1:]...)
+			Users = append(Users[:i], Users[i+1:]...)
 			return
 		}
 	}
@@ -47,31 +47,32 @@ func DeleteHandler(c *gin.Context) {
 
 func PutHandler(c *gin.Context) {
 	var user models.Person
+
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	for _, item := range users {
+	for i, item := range Users {
 		if id == item.Id {
 
+			users := Users
 			user.Id = id
 			name := c.Query("name")
 			is_admin := c.Query("is_admin")
 
 			if name != "" {
 				user.Name = name
-			} else {
-				user.Name = item.Name
 			}
 
 			if is_admin != "" {
 				user.IsAdmin, _ = strconv.ParseBool(is_admin)
-			} else {
-				user.IsAdmin = item.IsAdmin
 			}
+
+			Users = append(Users[:i], user)
+			Users = append(Users, users[i+1:]...)
 
 		}
 	}
 
-	c.JSON(200, user)
+	c.JSON(200, id)
 }
 
 func GetHandler(c *gin.Context) {
@@ -82,7 +83,7 @@ func GetHandler(c *gin.Context) {
 		c.JSON(500, gin.H{"ststus": "Server critical error"})
 	}
 
-	for _, item := range users {
+	for _, item := range Users {
 		if id == item.Id {
 			c.JSON(200, item)
 			return

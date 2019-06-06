@@ -6,11 +6,11 @@ import (
 )
 import rr "github.com/rj-project/router"
 
-var users []models.Person
+//var users []models.Person
 
 func main() {
 
-	users = []models.Person{
+	rr.Users = []models.Person{
 		models.Person{Id: 1, Name: "John Smith", IsAdmin: false},
 		models.Person{Id: 2, Name: "John Dou", IsAdmin: false},
 		models.Person{Id: 3, Name: "Angela Smith", IsAdmin: true},
