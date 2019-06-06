@@ -1,45 +1,21 @@
-package main
+package router
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rj-project/models"
 )
 
-type Person struct {
-	Id      int    `json:"id"`
-	Name    string `json:"name"`
-	isAdmin bool   `json:"is_admin"`
-}
+var users = []models.Person{}
 
-var users []Person
-
-func main() {
-
-	users = []Person{
-		Person{Id: 1, Name: "John Smith", isAdmin: false},
-		Person{Id: 2, Name: "John Dou", isAdmin: false},
-		Person{Id: 3, Name: "Angela Smith", isAdmin: true},
-		Person{Id: 4, Name: "Ron Smith", isAdmin: true},
-	}
-
-	r := gin.Default()
-	r.GET("/", rootHandler)
-	r.POST("/post", postHandler)
-	r.DELETE("/:id", deleteHandler)
-	r.PUT("/:id", putHandler)
-	r.GET("/:id", getHandler)
-
-	r.Run()
-}
-
-func rootHandler(c *gin.Context) {
+func RootHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func postHandler(c *gin.Context) {
-	var user Person
+func PostHandler(c *gin.Context) {
+	var user models.Person
 
 	name := c.Query("name")
 	is_admin := c.Query("isAdmin")
@@ -57,7 +33,7 @@ func postHandler(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-func deleteHandler(c *gin.Context) {
+func DeleteHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	for i, item := range users {
@@ -69,8 +45,8 @@ func deleteHandler(c *gin.Context) {
 	c.JSON(200, id)
 }
 
-func putHandler(c *gin.Context) {
-	var user Person
+func PutHandler(c *gin.Context) {
+	var user models.Person
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	for _, item := range users {
@@ -87,9 +63,9 @@ func putHandler(c *gin.Context) {
 			}
 
 			if is_admin != "" {
-				user.isAdmin, _ = strconv.ParseBool(is_admin)
+				user.IsAdmin, _ = strconv.ParseBool(is_admin)
 			} else {
-				user.isAdmin = item.isAdmin
+				user.IsAdmin = item.IsAdmin
 			}
 
 		}
@@ -98,7 +74,7 @@ func putHandler(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-func getHandler(c *gin.Context) {
+func GetHandler(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -113,5 +89,5 @@ func getHandler(c *gin.Context) {
 		}
 	}
 
-	c.JSON(404, Person{Id: 0, Name: "Anonymous", isAdmin: false})
+	c.JSON(404, models.Person{Id: 0, Name: "Anonymous", IsAdmin: false})
 }
